@@ -23,8 +23,12 @@
   <ItemGroup>
     <None Remove="Microsoft.Extensions.DependencyInjection" />
     <None Remove="SyncNoResult\" />
+    <None Remove="Performance\" />
+    <None Remove="Simple\" />
+    <None Remove="ServiceLifetime\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\" />
+    <Folder Include="Simple\" />
+    <Folder Include="ServiceLifetime\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿using System;
-namespace MsgNet.Abstractions;
+﻿namespace MsgNet.Abstractions;
 
 public interface IMessenger
 {

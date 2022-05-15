@@ -1,5 +1,4 @@
-﻿using System;
-namespace MsgNet.Abstractions;
+﻿namespace MsgNet.Abstractions;
 
 public class MsgNetException: Exception
 {
@@ -13,4 +12,3 @@ public class MsgNetException: Exception
 
     }
 }
-

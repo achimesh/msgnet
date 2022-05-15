@@ -1,12 +1,11 @@
-﻿using System;
-namespace MsgNet.Abstractions;
+﻿namespace MsgNet.Abstractions;
 
 public interface IAsyncMessageReceiver<in TMessage> where TMessage : IAsyncMessage
 {
-    Task Handle(TMessage message, CancellationToken cancellationToken);
+    Task HandleAsync(TMessage message, CancellationToken cancellationToken);
 }
 
 public interface IAsyncMessageReceiver<in TMessage, TResult> where TMessage : IAsyncMessage<TResult>
 {
-    Task<TResult> Handle(TMessage message, CancellationToken cancellationToken);
+    Task<TResult> HandleAsync(TMessage message, CancellationToken cancellationToken);
 }

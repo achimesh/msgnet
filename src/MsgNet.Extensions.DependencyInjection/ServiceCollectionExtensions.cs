@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using MsgNet;
 using MsgNet.Abstractions;
+using MsgNet.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -8,29 +8,51 @@ public static class MsgNetServiceCollectionExtensions
 {
     public static IServiceCollection AddMsgNet(this IServiceCollection services)
     {
-        return AddMsgNet(services, options => { });
+        return AddMsgNet(services, ConfigureDefaultBuilder);
     }
 
-    public static IServiceCollection AddMsgNet(this IServiceCollection services, Action<MsgNetOptions> configure)
+    public static IServiceCollection AddMsgNet(this IServiceCollection services, Action<IMessageBuilder> configure)
     {
         return AddMsgNet(services, AppDomain.CurrentDomain.GetAssemblies(), configure);
     }
 
-    public static IServiceCollection AddMsgNet(this IServiceCollection services, IEnumerable<Assembly> assemblies, Action<MsgNetOptions> configure)
+    public static IServiceCollection AddMsgNet(this IServiceCollection services, IEnumerable<Assembly> assemblies, Action<IMessageBuilder> configure)
     {
+        var builder = new MessageBuilder(services);
         var types = assemblies.SelectMany(i => i.DefinedTypes).Where(t => t.HasGenericElements() == false && t.IsConcreteType());
 
-        RegisterServices(typeof(IMessageReceiver<>), types, services);
-        RegisterServices(typeof(IMessageReceiver<,>), types, services);
-        RegisterServices(typeof(IAsyncMessageReceiver<>), types, services);
-        RegisterServices(typeof(IAsyncMessageReceiver<,>), types, services);
+        ConfigureDefaultBuilder(builder);
 
-        services.AddSingleton<IMessenger, MsgNetMessenger>();
+        ServiceLifetime serviceLifetimeSelector(Type type)
+        {
+            var attributes = Attribute.GetCustomAttributes(type);
+            var result = (MessageReceiverAttribute?)attributes.SingleOrDefault(attr => attr is MessageReceiverAttribute);
+
+            if (result == null)
+            {
+                return builder.DefaultMessageReceiverLifetime;
+            }
+
+            return result.Lifetime;
+        }
+
+        configure(builder);
+
+        FilterAndRegisterServices(typeof(IMessageReceiver<>), types, services, serviceLifetimeSelector);
+        FilterAndRegisterServices(typeof(IMessageReceiver<,>), types, services, serviceLifetimeSelector);
+        FilterAndRegisterServices(typeof(IAsyncMessageReceiver<>), types, services, serviceLifetimeSelector);
+        FilterAndRegisterServices(typeof(IAsyncMessageReceiver<,>), types, services, serviceLifetimeSelector);
 
         return services;
     }
 
-    private static void RegisterServices(Type requestInterface, IEnumerable<TypeInfo> types, IServiceCollection services)
+    private static void ConfigureDefaultBuilder(IMessageBuilder builder)
+    {
+        builder.DefaultMessageReceiverLifetime = ServiceLifetime.Transient;
+        builder.UseDefaultMessenger();
+    }
+
+    private static void FilterAndRegisterServices(Type requestInterface, IEnumerable<TypeInfo> types, IServiceCollection services, Func<Type, ServiceLifetime> serviceLifetimeSelector)
     {
         var registeredInterfaces = new List<Type>();
 
@@ -49,8 +71,28 @@ public static class MsgNetServiceCollectionExtensions
                     throw new Exception($"Implementation type {type.FullName} has duplicated interfaces. Duplicated interfaces: {registeredInterface.FullName}, {@interface.FullName}");
                 }
 
-                services.AddTransient(@interface, type);
+                RegisterService(@interface, type, serviceLifetimeSelector(type), services);
             }
+        }
+    }
+
+    private static void RegisterService(Type @interface, TypeInfo implementationType, ServiceLifetime serviceLifetime, IServiceCollection services)
+    {
+        if (serviceLifetime == ServiceLifetime.Transient)
+        {
+            services.AddTransient(@interface, implementationType);
+        }
+        else if (serviceLifetime == ServiceLifetime.Scoped)
+        {
+            services.AddScoped(@interface, implementationType);
+        }
+        else if (serviceLifetime == ServiceLifetime.Singleton)
+        {
+            services.AddSingleton(@interface, implementationType);
+        }
+        else
+        {
+            throw new MsgNetException($"Unsupported service life time: {serviceLifetime}");
         }
     }
 
