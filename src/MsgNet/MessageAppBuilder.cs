@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MsgNet.Abstractions;
 
-namespace MsgNet.Extensions.DependencyInjection;
+namespace MsgNet;
 
-internal class MessageBuilder: IMessageBuilder
+internal class MessageAppBuilder: IMessageAppBuilder
 {
     public ServiceLifetime DefaultMessageReceiverLifetime { get; set; }
 
     private readonly IServiceCollection _serviceDescriptors;
 
-    public MessageBuilder(IServiceCollection serviceDescriptors)
+    public MessageAppBuilder(IServiceCollection serviceDescriptors)
     {
         _serviceDescriptors = serviceDescriptors;
     }

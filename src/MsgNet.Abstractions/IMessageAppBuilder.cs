@@ -2,7 +2,7 @@
 
 namespace MsgNet.Abstractions;
 
-public interface IMessageBuilder
+public interface IMessageAppBuilder
 {
     ServiceLifetime DefaultMessageReceiverLifetime { get; set; }
 

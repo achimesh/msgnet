@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MsgNet.Extensions.DependencyInjection\MsgNet.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\MsgNet\MsgNet.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.Extensions.DependencyInjection" />

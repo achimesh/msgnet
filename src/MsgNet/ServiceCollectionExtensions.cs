@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using MsgNet;
 using MsgNet.Abstractions;
-using MsgNet.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -11,14 +11,14 @@ public static class MsgNetServiceCollectionExtensions
         return AddMsgNet(services, ConfigureDefaultBuilder);
     }
 
-    public static IServiceCollection AddMsgNet(this IServiceCollection services, Action<IMessageBuilder> configure)
+    public static IServiceCollection AddMsgNet(this IServiceCollection services, Action<IMessageAppBuilder> configure)
     {
         return AddMsgNet(services, AppDomain.CurrentDomain.GetAssemblies(), configure);
     }
 
-    public static IServiceCollection AddMsgNet(this IServiceCollection services, IEnumerable<Assembly> assemblies, Action<IMessageBuilder> configure)
+    public static IServiceCollection AddMsgNet(this IServiceCollection services, IEnumerable<Assembly> assemblies, Action<IMessageAppBuilder> configure)
     {
-        var builder = new MessageBuilder(services);
+        var builder = new MessageAppBuilder(services);
         var types = assemblies.SelectMany(i => i.DefinedTypes).Where(t => t.HasGenericElements() == false && t.IsConcreteType());
 
         ConfigureDefaultBuilder(builder);
@@ -26,7 +26,7 @@ public static class MsgNetServiceCollectionExtensions
         ServiceLifetime serviceLifetimeSelector(Type type)
         {
             var attributes = Attribute.GetCustomAttributes(type);
-            var result = (MessageReceiverAttribute?)attributes.SingleOrDefault(attr => attr is MessageReceiverAttribute);
+            var result = (ServiceInjectionAttribute?)attributes.SingleOrDefault(attr => attr is ServiceInjectionAttribute);
 
             if (result == null)
             {
@@ -46,10 +46,13 @@ public static class MsgNetServiceCollectionExtensions
         return services;
     }
 
-    private static void ConfigureDefaultBuilder(IMessageBuilder builder)
+    private static void ConfigureDefaultBuilder(IMessageAppBuilder builder)
     {
+        var services = builder.GetServiceDescriptors();
+
         builder.DefaultMessageReceiverLifetime = ServiceLifetime.Transient;
-        builder.UseDefaultMessenger();
+
+        services.AddSingleton<IMessenger, MsgNetMessenger>();
     }
 
     private static void FilterAndRegisterServices(Type requestInterface, IEnumerable<TypeInfo> types, IServiceCollection services, Func<Type, ServiceLifetime> serviceLifetimeSelector)

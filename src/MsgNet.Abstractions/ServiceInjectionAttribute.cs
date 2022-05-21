@@ -3,11 +3,11 @@
 namespace MsgNet.Abstractions;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class MessageReceiverAttribute: Attribute
+public class ServiceInjectionAttribute: Attribute
 {
     public ServiceLifetime Lifetime { get; }
 
-    public MessageReceiverAttribute(ServiceLifetime serviceLifetime)
+    public ServiceInjectionAttribute(ServiceLifetime serviceLifetime)
     {
         Lifetime = serviceLifetime;
 

@@ -6,6 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Authors>Hao Le</Authors>
+    <Company>Hao Le</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/achimesh/msgnet</RepositoryUrl>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>

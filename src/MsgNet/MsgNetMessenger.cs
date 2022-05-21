@@ -4,11 +4,11 @@ using MsgNet.Abstractions;
 
 namespace MsgNet;
 
-internal class DefaultMessenger: IMessenger
+internal class MsgNetMessenger: IMessenger
 {
     private readonly IServiceProvider ServiceProvider;
 
-    public DefaultMessenger(IServiceProvider serviceProvider)
+    public MsgNetMessenger(IServiceProvider serviceProvider)
     {
         ServiceProvider = serviceProvider;
     }

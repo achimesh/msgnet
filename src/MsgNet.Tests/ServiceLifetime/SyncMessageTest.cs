@@ -27,7 +27,7 @@ internal class SyncMessageTest
 
     }
 
-    [MessageReceiver(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient)]
+    [ServiceInjection(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient)]
     class TestMessageTransientReceiver : IMessageReceiver<TestMessageTransient>
     {
         private int Sum = 0;
@@ -61,7 +61,7 @@ internal class SyncMessageTest
 
     }
 
-    [MessageReceiver(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped)]
+    [ServiceInjection(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Scoped)]
     class TestMessageScopedReceiver : IMessageReceiver<TestMessageScoped>
     {
         private int Sum = 0;
@@ -106,7 +106,7 @@ internal class SyncMessageTest
 
     }
 
-    [MessageReceiver(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton)]
+    [ServiceInjection(Microsoft.Extensions.DependencyInjection.ServiceLifetime.Singleton)]
     class TestMessageSingletonReceiver : IMessageReceiver<TestMessageSingleton>
     {
         private int Sum = 0;
