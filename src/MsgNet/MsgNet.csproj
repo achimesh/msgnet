@@ -10,8 +10,11 @@
     <Authors>Hao Le</Authors>
     <Company>Hao Le</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/achimesh/msgnet</RepositoryUrl>
+    <Description>Modular in-process messaging built on Microsoft.Extensions.DependencyInjection.</Description>
+    <Copyright>Copyright (c) Hao Le 2022.</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

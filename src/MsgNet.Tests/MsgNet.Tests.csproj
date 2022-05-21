@@ -18,17 +18,18 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MsgNet\MsgNet.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Microsoft.Extensions.DependencyInjection" />
     <None Remove="SyncNoResult\" />
     <None Remove="Performance\" />
     <None Remove="Simple\" />
     <None Remove="ServiceLifetime\" />
+    <None Remove="MsgNet" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Simple\" />
     <Folder Include="ServiceLifetime\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MsgNet\MsgNet.csproj" />
   </ItemGroup>
 </Project>
